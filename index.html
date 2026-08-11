@@ -5,19 +5,21 @@
     <title>Control Remoto - Movilnet IoT</title>
     <style>
         body { font-family: Arial; text-align: center; margin-top: 50px; background-color: #121212; color: white; }
-        button { padding: 20px 40px; font-size: 20px; cursor: pointer; border-radius: 10px; margin: 10px; font-weight: bold; }
+        button { padding: 25px 50px; font-size: 22px; cursor: pointer; border-radius: 12px; margin: 15px; font-weight: bold; box-shadow: 0px 4px 10px rgba(0,0,0,0.3); }
         .on { background-color: #28a745; color: white; border: none; }
         .off { background-color: #dc3545; color: white; border: none; }
     </style>
 </head>
 <body>
     <h1>Control Generador Movilnet</h1>
-    <button class="on" onclick="controlarRele('ON')">ENCENDER</button>
-    <button class="off" onclick="controlarRele('OFF')">APAGAR</button>
+    <p>Panel de Pasantías - Telemetría</p>
+    
+    <button class="on" onclick="controlarRele('ON')">ENCENDER MOTOR</button><br>
+    <button class="off" onclick="controlarRele('OFF')">APAGAR MOTOR</button>
 
     <script>
         const username = "hectorasj";
-        const key = "aio_WlDd22yXwK1FkYdeuq1WOB2K8CcF";
+        const key = "aio_VBzU56NqzC2Br7d0suOuoxA8f9Uz";
         const feed = "rele";
 
         function controlarRele(estado) {
@@ -31,9 +33,9 @@
             })
             .then(response => {
                 if (response.ok) {
-                    alert("¡Éxito! Orden enviada: " + estado);
+                    alert("Comando enviado exitosamente: " + estado);
                 } else {
-                    response.text().then(text => alert("Error " + response.status + ": " + text));
+                    response.text().then(text => alert("Error al enviar: " + text));
                 }
             })
             .catch(err => console.error("Error de red:", err));
