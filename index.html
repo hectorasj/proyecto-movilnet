@@ -140,7 +140,7 @@
 
         let estadoActualRele = "OFF";
 
-        // Función para enviar comandos a Adafruit IO con los headers correctos
+        // Función para enviar comandos a Adafruit IO simplificada para GitHub Pages
         async function enviarComandoAIO(feedName, valor) {
             const url = `https://io.adafruit.com/api/v2/${USERNAME}/feeds/${feedName}/data`;
             try {
@@ -148,8 +148,7 @@
                     method: 'POST',
                     headers: {
                         'X-AIO-Key': AIO_KEY,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ value: valor })
                 });
@@ -206,10 +205,6 @@
                         actualizarInterfaz(dataRele.value);
                     }
                 }
-
-                // (Opcional para cuando agregues los sensores físicos más adelante)
-                // const resVoltaje = await fetch(`https://io.adafruit.com/api/v2/${USERNAME}/feeds/voltaje/data/last`, { headers: { 'X-AIO-Key': AIO_KEY } });
-                // ...
             } catch (error) {
                 console.error("Error al actualizar el dashboard:", error);
             }
