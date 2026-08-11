@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Control Remoto - Movilnet IoT</title>
+    <style>
+        body { font-family: Arial; text-align: center; margin-top: 50px; }
+        button { padding: 20px 40px; font-size: 20px; cursor: pointer; border-radius: 10px; }
+        .on { background-color: #28a745; color: white; }
+        .off { background-color: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Control Generador Movilnet</h1>
+    <button class="on" onclick="controlarRele('ON')">ENCENDER</button>
+    <button class="off" onclick="controlarRele('OFF')">APAGAR</button>
+
+    <script>
+        const username = "hectorasj"; // Tu usuario
+        const key = "aio_Pvar213yqidR1Ozb8h5BZDUT2B2E"; // Tu API Key
+        const feed = "rele";
+
+        function controlarRele(estado) {
+            fetch(`https://io.adafruit.com/api/v2/${username}/feeds/${feed}/data`, {
+                method: 'POST',
+                headers: {
+                    'X-AIO-Key': key,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ "value": estado })
+            })
+            .then(response => alert("Orden enviada: " + estado))
+            .catch(err => console.error("Error:", err));
+        }
+    </script>
+</body>
+</html>
