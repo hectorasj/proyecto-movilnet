@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Control Remoto - Movilnet IoT</title>
     <style>
-        body { font-family: Arial; text-align: center; margin-top: 50px; }
-        button { padding: 20px 40px; font-size: 20px; cursor: pointer; border-radius: 10px; margin: 10px; }
+        body { font-family: Arial; text-align: center; margin-top: 50px; background-color: #121212; color: white; }
+        button { padding: 20px 40px; font-size: 20px; cursor: pointer; border-radius: 10px; margin: 10px; font-weight: bold; }
         .on { background-color: #28a745; color: white; border: none; }
         .off { background-color: #dc3545; color: white; border: none; }
     </style>
@@ -17,7 +17,7 @@
 
     <script>
         const username = "hectorasj";
-        const key = "aio_WlDd22yXwK1fkYdeuq1WOB2K8CcF"; // TU CLAVE NUEVA
+        const key = "aio_WlDd22yXwK1FkYdeuq1WOB2K8CcF";
         const feed = "rele";
 
         function controlarRele(estado) {
@@ -31,12 +31,12 @@
             })
             .then(response => {
                 if (response.ok) {
-                    alert("Orden enviada: " + estado);
+                    alert("¡Éxito! Orden enviada: " + estado);
                 } else {
-                    alert("Error " + response.status + ": Revisa la clave");
+                    response.text().then(text => alert("Error " + response.status + ": " + text));
                 }
             })
-            .catch(err => console.error("Error:", err));
+            .catch(err => console.error("Error de red:", err));
         }
     </script>
 </body>
