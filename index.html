@@ -2,217 +2,42 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel IoT - Proyecto Movilnet</title>
+    <title>Control Remoto - Movilnet IoT</title>
     <style>
-        :root {
-            --primary: #004d40;
-            --secondary: #00796b;
-            --accent: #00b0ff;
-            --bg: #121212;
-            --card-bg: #1e1e1e;
-            --text: #ffffff;
-            --text-secondary: #b0bec5;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            color: var(--accent);
-            margin: 0;
-            font-size: 1.8rem;
-        }
-
-        header p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .dashboard-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            text-align: center;
-            border: 1px solid #333;
-        }
-
-        .card h2 {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-top: 0;
-        }
-
-        .value {
-            font-size: 2.2rem;
-            font-weight: bold;
-            color: var(--text);
-            margin: 10px 0;
-        }
-
-        /* Estilos del Botón de Control */
-        .btn-control {
-            background-color: #d32f2f;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            transition: background 0.3s, transform 0.1s;
-            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4);
-        }
-
-        .btn-control.active {
-            background-color: #388e3c;
-            box-shadow: 0 4px 15px rgba(56, 142, 60, 0.4);
-        }
-
-        .btn-control:active {
-            transform: scale(0.98);
-        }
-
-        .status-indicator {
-            margin-top: 10px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
+        body { font-family: Arial; text-align: center; margin-top: 50px; }
+        button { padding: 20px 40px; font-size: 20px; cursor: pointer; border-radius: 10px; margin: 10px; }
+        .on { background-color: #28a745; color: white; border: none; }
+        .off { background-color: #dc3545; color: white; border: none; }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1>Control Remoto IoT</h1>
-        <p>Sistema de Monitoreo - UDO Pasantías</p>
-    </header>
-
-    <div class="dashboard-container">
-        <!-- Control de Motor / Relé -->
-        <div class="card">
-            <h2>Control del Motor</h2>
-            <button id="btnRelay" class="btn-control" onclick="alternarRele()">ENCENDER MOTOR</button>
-            <div class="status-indicator" id="relayStatus">Estado: Sincronizando...</div>
-        </div>
-
-        <!-- Tarjeta Voltaje -->
-        <div class="card">
-            <h2>Voltaje del Sistema</h2>
-            <div class="value" id="valVoltaje">-- V</div>
-            <div class="status-indicator">Sensor Divisor de Tensión</div>
-        </div>
-
-        <!-- Tarjeta Calidad de Aire -->
-        <div class="card">
-            <h2>Calidad de Aire (MQ-135)</h2>
-            <div class="value" id="valAire">-- PPM</div>
-            <div class="status-indicator">Sensor Ambiental</div>
-        </div>
-    </div>
+    <h1>Control Generador Movilnet</h1>
+    <button class="on" onclick="controlarRele('ON')">ENCENDER</button>
+    <button class="off" onclick="controlarRele('OFF')">APAGAR</button>
 
     <script>
-        // CONFIGURACIÓN DE ADAFRUIT IO
-        const USERNAME = "hectorasj";
-        const AIO_KEY = "aio_WlDd22yXwK1FkYdeuq1WOB2K8CcF";
+        const username = "hectorasj";
+        const key = "aio_WlDd22yXwK1FkYdeuq1WOB2K8CcF"; // TU CLAVE NUEVA
+        const feed = "rele";
 
-        let estadoActualRele = "OFF";
-
-        // Función para enviar comandos a Adafruit IO simplificada para GitHub Pages
-        async function enviarComandoAIO(feedName, valor) {
-            const url = `https://io.adafruit.com/api/v2/${USERNAME}/feeds/${feedName}/data`;
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'X-AIO-Key': AIO_KEY,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ value: valor })
-                });
-                
-                if (!response.ok) {
-                    console.error("Error en la respuesta de Adafruit:", response.status);
+        function controlarRele(estado) {
+            fetch(`https://io.adafruit.com/api/v2/${username}/feeds/${feed}/data`, {
+                method: 'POST',
+                headers: {
+                    'X-AIO-Key': key,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ "value": estado })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Orden enviada: " + estado);
+                } else {
+                    alert("Error " + response.status + ": Revisa la clave");
                 }
-            } catch (error) {
-                console.error("Error al enviar comando:", error);
-            }
+            })
+            .catch(err => console.error("Error:", err));
         }
-
-        // Función para cambiar el estado al hacer clic en el botón
-        async function alternarRele() {
-            const nuevoValor = (estadoActualRele === "ON") ? "OFF" : "ON";
-            
-            // Actualización visual inmediata para que se sienta fluido
-            actualizarInterfaz(nuevoValor);
-            
-            // Enviar la orden a la nube
-            await enviarComandoAIO("rele", nuevoValor);
-            
-            // Consultar de nuevo el estado real en breve
-            setTimeout(actualizarDashboard, 1000);
-        }
-
-        // Función para actualizar los colores y textos del botón
-        function actualizarInterfaz(valor) {
-            estadoActualRele = valor;
-            const btn = document.getElementById("btnRelay");
-            const status = document.getElementById("relayStatus");
-
-            if (valor === "ON") {
-                btn.innerText = "APAGAR MOTOR";
-                btn.classList.add("active");
-                status.innerText = "Estado: ENCENDIDO";
-            } else {
-                btn.innerText = "ENCENDER MOTOR";
-                btn.classList.remove("active");
-                status.innerText = "Estado: APAGADO";
-            }
-        }
-
-        // Función para consultar los datos actuales desde Adafruit IO
-        async function actualizarDashboard() {
-            try {
-                // Consultar feed del relé
-                const resRele = await fetch(`https://io.adafruit.com/api/v2/${USERNAME}/feeds/rele/data/last`, {
-                    headers: { 'X-AIO-Key': AIO_KEY }
-                });
-                if (resRele.ok) {
-                    const dataRele = await resRele.json();
-                    if (dataRele && dataRele.value) {
-                        actualizarInterfaz(dataRele.value);
-                    }
-                }
-            } catch (error) {
-                console.error("Error al actualizar el dashboard:", error);
-            }
-        }
-
-        // Ejecutar al cargar la página y refrescar cada 4 segundos
-        actualizarDashboard();
-        setInterval(actualizarDashboard, 4000);
     </script>
 </body>
 </html>
